@@ -4,87 +4,169 @@
 #include <math.h>
 
 // Forward function declaration.
-static PyObject *grid_search1(PyObject *self, PyObject *args); 
+static PyObject *gridsearch(PyObject *self, PyObject *args); 
 
 // Boilerplate: method list.
 static PyMethodDef methods[] = {
-  { "grid_search1", grid_search1, METH_VARARGS, "Doc string."},
+  { "gridsearch", gridsearch, METH_VARARGS, "Doc string."},
   { NULL, NULL, 0, NULL } /* Sentinel */
 };
 
 // Boilerplate: Module initialization.
-PyMODINIT_FUNC initgrid_search1(void) {
-  (void) Py_InitModule("grid_search1", methods);
+PyMODINIT_FUNC initgridsearch1(void) {
+  (void) Py_InitModule("gridsearch1", methods);
   import_array();
 }
 
 /*****************************************************************************
  array access macros
  *****************************************************************************/
-#define greens(x0) (*(npy_float64*)((PyArray_DATA(greens) +                \
-                                (x0) * PyArray_STRIDES(greens)[0])))
+#define data(i0,i1,i2) (*(npy_float64*)((PyArray_DATA(data) +                \
+                                (i0) * PyArray_STRIDES(data)[0] +            \
+                                (i1) * PyArray_STRIDES(data)[1] +            \
+                                (i2) * PyArray_STRIDES(data)[2] )))
 
-#define mt(x0) (*(npy_float64*)((PyArray_DATA(mt) +                \
-                                (x0) * PyArray_STRIDES(mt)[0])))
+#define greens(i0,i1,i2,i3) (*(npy_float64*)((PyArray_DATA(greens) +         \
+                                (i0) * PyArray_STRIDES(greens)[0] +          \
+                                (i1) * PyArray_STRIDES(greens)[1] +          \
+                                (i2) * PyArray_STRIDES(greens)[2] +          \
+                                (i3) * PyArray_STRIDES(greens)[3] )))
+
+#define mt(i0,i1) (*(npy_float64*)((PyArray_DATA(mt) +                       \
+                                (i0) * PyArray_STRIDES(mt)[0] +              \
+                                (i1) * PyArray_STRIDES(mt)[1] )))
+
+
+#define synthetics(i0,i1,i2) (*(npy_float64*)((PyArray_DATA(synthetics) +    \
+                                (i0) * PyArray_STRIDES(synthetics)[0] +      \
+                                (i1) * PyArray_STRIDES(synthetics)[1] +      \
+                                (i2) * PyArray_STRIDES(synthetics)[2] )))
+
 
 /*****************************************************************************
  get_synthetics
  *****************************************************************************/
 static inline void get_synthetics(
+                             PyArrayObject *greens,
+                             PyArrayObject *mt,
+                             PyObject *synthetics,
                              npy_int64 NC,
                              npy_int64 NS,
-                             npy_int64 NTP,
-                             npy_int64 NF,
-                             PyArrayObject *greens,
-                             npy_float64 *synthetics,
-                             PyArrayObject *mt) {
-    npy_int64 i, j;
+                             npy_int64 NT,
+                             npy_int64 NGF,
+                             npy_int64 i) {
+
+    npy_int64 i0,i1,i2,i3;
+    npy_float64 mti;
   
-    for (j=0 ; j<NC*NS*NTP; j++) {
-        synthetics[j] = 0.;
+    for (i0=0; i0<NC; i0++) {
+    for (i1=0; i1<NS; i1++) {
+    for (i2=0; i2<NT; i2++) {
+        synthetics(i0,i1,i2) = 0.;
+    }
+    }
     }
 
-    for (i=0 ; i<NF; i++) {
-        for (j=0 ; j<NC*NS*NTP; j++) {
-            synthetics[j] += greens(i*NC*NS*NTP + j) * mt(i);
-        }
+    for (i0=0; i0<NGF; i0++) {
+    mti = mt(i, i0);
+    for (i1=0; i1<NC; i1++) {
+    for (i2=0; i2<NS; i2++) {
+    for (i3=0; i3<NT; i3++) {
+        synthetics(i1,i2,i3) += greens(i0,i1,i2,i3) * mti;
+    }
+    }
+    }
     }
 
-  
 }
 
 /*****************************************************************************
- grid_search1
+ gridsearch
  *****************************************************************************/
-static PyObject *grid_search1(PyObject *self, PyObject *args) {
+static PyObject *gridsearch(PyObject *self, PyObject *args) {
 
-  npy_int64 NC, NS, NTP, NF, NM;
   PyArrayObject *data, *greens, *mt;
+  npy_int64 NC, NS, NT, NGF, NMT;
   npy_int64 i;
 
 
+
+
   // parse arguments
-  if (!PyArg_ParseTuple(args, "lllllO!O!O!",
-                        &NC,
-                        &NS,
-                        &NTP,
-                        &NF,
-                        &NM,
+  if (!PyArg_ParseTuple(args, "O!O!O!",
                         &PyArray_Type, &data,
                         &PyArray_Type, &greens,
                         &PyArray_Type, &mt)) {
     return NULL;
   }
 
+  NC = PyArray_SHAPE(data)[0];
+  NS = PyArray_SHAPE(data)[1];
+  NT = PyArray_SHAPE(data)[2];
+  NGF = PyArray_SHAPE(greens)[1];
+  NMT = PyArray_SHAPE(mt)[0];
 
-  // ultimately, we want to use 
-  // PyObject *PyArray_SimpleNew(int nd, npy_intp* dims, int typenum)
-  npy_float64 *synthetics;
-  synthetics = (npy_float64 *) malloc(NC*NS*NTP);
+  printf("number of components:  %d\n", NC);
+  printf("number of stations:  %d\n", NS);
+  printf("number of time samples:  %d\n", NT);
+  printf("\n");
 
-  for(i = 0;  i<NM; ++i) {
-    get_synthetics(NC, NS, NTP, NF, greens, synthetics, mt);
+  printf("number of Green's functions:  %d\n", NGF);
+  printf("number of moment tensors:  %d\n", NMT);
+  printf("\n");
+
+
+  printf("greens,0 %d\n", (int) PyArray_STRIDES(greens)[0]);
+  printf("greens,1 %d\n", (int) PyArray_STRIDES(greens)[1]);
+  printf("greens,2 %d\n", (int) PyArray_STRIDES(greens)[2]);
+  printf("greens,3 %d\n", (int) PyArray_STRIDES(greens)[3]);
+  printf("\n");
+
+
+
+
+  int nd = 3;
+  npy_intp dims[] = {NC,NS,NT};
+  PyObject *synthetics = PyArray_SimpleNew(nd, dims, NPY_DOUBLE);
+
+  NC = PyArray_SHAPE(data)[0];
+  NS = PyArray_SHAPE(data)[1];
+  NT = PyArray_SHAPE(data)[2];
+
+  printf("%d\n", NC);
+  printf("%d\n", NS);
+  printf("%d\n", NT);
+  printf("\n");
+
+
+    npy_int64 i0,i1,i2,i3;
+    npy_float64 mti;
+
+
+  for(i = 0;  i<NMT; ++i) {
+    //get_synthetics(greens, mt, synthetics, NC, NS, NT, NGF, i);
+
+    for (i0=0; i0<NC; i0++) {
+    for (i1=0; i1<NS; i1++) {
+    for (i2=0; i2<NT; i2++) {
+        synthetics(i0,i1,i2) = 0.;
+    }
+    }
+    }
+
+    for (i0=0; i0<NGF; i0++) {
+    mti = mt(i, i0);
+    for (i1=0; i1<NC; i1++) {
+    for (i2=0; i2<NS; i2++) {
+    for (i3=0; i3<NT; i3++) {
+        synthetics(i1,i2,i3) += greens(i0,i1,i2,i3) * mti;
+    }
+    }
+    }
+    }
+
   }
 
   Py_RETURN_NONE;
 }
+

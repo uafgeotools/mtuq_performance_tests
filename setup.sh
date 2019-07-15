@@ -1,5 +1,5 @@
 #!/bin/bash
 
-rm lib/*.so
+rm examples/*.so
 python ./setup.py build_ext --inplace
 
