@@ -1,8 +1,8 @@
 
 import copy
 import numpy as np
+import nbody1, nbody2
 
-import simple1, simple2#, simd1, omp1, simdomp1
 
 
 class World(object):
@@ -68,25 +68,11 @@ def evolve(w, steps):
 
 def evolve_c_simple1(w, steps):
     """Evolve the world using the simple1 C module."""
-    simple1.evolve(w.threads, w.dt, steps, w.N, w.m, w.r, w.v, w.F)
+    nbody1.evolve(w.threads, w.dt, steps, w.N, w.m, w.r, w.v, w.F)
 
 
 def evolve_c_simple2(w, steps):
     """Evolve the world using the simple2 C module."""
-    simple2.evolve(w.threads, w.dt, steps, w.N, w.m, w.r, w.v, w.F)
+    nbody2.evolve(w.threads, w.dt, steps, w.N, w.m, w.r, w.v, w.F)
 
 
-def evolve_c_simd1(w, steps):
-    """Evolve the world using the simd1 C module."""
-    simd1.evolve(w.threads, w.dt, steps, w.N, w.m, w.r, w.v, w.F)
-
-
-def evolve_c_omp1(w, steps):
-    """Evolve the world using the omp1 C module."""
-    omp1.evolve(w.threads, w.dt, steps, w.N, w.m, w.r, w.v, w.F, w.Ft)
-
-
-def evolve_c_simdomp1(w, steps):
-    """Evolve the world using the simdomp1 C module."""
-    simdomp1.evolve(w.threads, w.dt, steps, w.N, w.m, w.r, w.v, w.F, w.Ft)
-    
