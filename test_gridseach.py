@@ -1,10 +1,9 @@
 
 import os
 import time
-import multiprocessing as mp
 import numpy as np
-import lib
 
+from examples.gridsearch import World, run_gridsearch1, run_gridsearch2
 
 
 def display_result(results):
@@ -13,10 +12,11 @@ def display_result(results):
 
 
 def timer(fn, name, nmt=1000):
+    w = World()
     print "\n"
 
     # measure function execution speed
-    pass
+    fn(w)
     
     # display result
     pass
@@ -24,6 +24,6 @@ def timer(fn, name, nmt=1000):
     
 
 if __name__ == "__main__":
-    timer(examples.gridsearch1, "Grid Search 1", nmt=32000)
-    timer(examples.gridsearch2, "Grid Search 2", nmt=32000)
+    #timer(run_gridsearch1, "Grid Search 1", nmt=32000)
+    timer(run_gridsearch2, "Grid Search 2", nmt=32000)
 
