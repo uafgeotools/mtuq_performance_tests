@@ -3,7 +3,7 @@ import numpy as np
 import gridsearch1, gridsearch2
 
 from copy import deepcopy
-from mtuq.util import examples
+from mtuq.util import example_data as examples
 
 
 class mtuq_bw(object):

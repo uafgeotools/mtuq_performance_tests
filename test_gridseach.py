@@ -22,7 +22,7 @@ def timer(grid_search, problem, name, nmt=1000):
     
 
 if __name__ == "__main__":
-    t0 = timer(run_gridsearch, mtuq_sw(npts_per_axis=20), "Pure python grid search")
+    t0 = timer(run_gridsearch, mtuq_bw(npts_per_axis=20), "Pure python grid search")
     print 'elapsed time: %f' % t0
 
     t1 = timer(run_gridsearch1, mockup_bw(nmt=8000), "Python/C grid search 1")
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     print '%.1fx faster than pure python' % (t0/t2)
 
 
-    t0 = timer(run_gridsearch, mtuq_bw(npts_per_axis=10), "Pure python grid search")
+    t0 = timer(run_gridsearch, mtuq_sw(npts_per_axis=10), "Pure python grid search")
     print 'elapsed time: %f' % t0
 
     t1 = timer(run_gridsearch1, mockup_sw(nmt=1000), "Python/C grid search 1")

@@ -24,7 +24,7 @@ def timer(grid_search, problem, name, nmt=1000):
 if __name__ == "__main__":
     nc,ns,nt,ngf = 3,20,7500,2
 
-    for nmt in range(10000,100000,10000):
+    for nmt in range(2e4,1e5,2e4):
         t = timer(run_gridsearch1, mockup(nc, ns, nt, ngf, nmt), "nmt = %d" %nmt)
         print 'evaluations per second: %.1e' %  (nmt/t)
 

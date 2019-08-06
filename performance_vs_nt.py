@@ -18,13 +18,17 @@ def timer(grid_search, problem, name, nmt=1000):
     grid_search(problem)
     elapsed_time = time.time() - start_time
     return elapsed_time
+
+
+def irange(*args):
+    return range(*[int(arg) for arg in args])
     
     
 
 if __name__ == "__main__":
     nc,ns,ngf,nmt = 3,20,6,1000
 
-    for nt in range(10000,100000,10000):
+    for nt in irange(2e4,1e5,2e4):
         t = timer(run_gridsearch1, mockup(nc, ns, nt, ngf, nmt), "nt = %d" %nt)
         print 'evaluations per second: %.1e' %  (nt/t)
 

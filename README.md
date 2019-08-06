@@ -1,9 +1,6 @@
 
-a collection of numpy/c examples 
-relevant to github.com/uafseismo/mtuq
+mtuq performance tests
+----------------------
 
-
-MODIFIED FROM
-python-numpy-c-extension-examples
-by J. David Lee
+inspired by a similar package called github.com/johnnylee/python-numpy-c-extension-examples
 
