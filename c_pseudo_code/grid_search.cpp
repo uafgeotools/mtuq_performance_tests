@@ -8,13 +8,13 @@ using namespace std;
 
 
 // number of components
-static int NC = 2;
+static int NC = 3;
 
 // number of stations
-static int NS = 20;
+static int NS = 18;
 
 // number of time samples
-static int NT = 950;
+static int NT = 7500;
 
 // number of Green's functions per component
 static int NF = 6;
@@ -26,7 +26,7 @@ static int NG = 2;
 static int ND = 1;
 
 // number of moment tensors
-static int NM = 50000;
+static int NM = 1000;
 
 
 static int min_shift = -100;
