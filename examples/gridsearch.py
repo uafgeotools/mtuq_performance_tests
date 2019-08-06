@@ -54,9 +54,9 @@ class mockup(object):
         self.allocate()
 
     def allocate(self):
-        self.data  = np.zeros((self.nc,self.ns,self.nt))
-        self.greens  = np.zeros((self.ngf,self.nc,self.ns,self.nt))
-        self.mt  = np.zeros((self.nmt,self.ngf))
+        self.data  = np.random.rand((self.nc,self.ns,self.nt))
+        self.greens  = np.random.rand((self.ngf,self.nc,self.ns,self.nt))
+        self.mt  = np.random.rand((self.nmt,self.ngf))
 
     def copy(self):
         return deepcopy(self)
