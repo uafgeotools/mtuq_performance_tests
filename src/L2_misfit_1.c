@@ -13,8 +13,8 @@ static PyMethodDef methods[] = {
 };
 
 // Boilerplate: Module initialization.
-PyMODINIT_FUNC initmisfit2(void) {
-  (void) Py_InitModule("misfit2", methods);
+PyMODINIT_FUNC initL2_misfit_1(void) {
+  (void) Py_InitModule("L2_misfit_1", methods);
   import_array();
 }
 
@@ -63,7 +63,7 @@ static PyObject *misfit(PyObject *self, PyObject *args) {
   PyArrayObject *data, *greens, *sources;
   PyArrayObject *data_data, *greens_data, *greens_greens;
   npy_int64 NCOMPS, NSTATIONS, NPTS, NGREENS, NSOURCES;
-  int Npad1, Npad2;
+  npy_int64 Npad1, Npad2;
   int verbose;
 
   int npts_shift;
@@ -100,9 +100,9 @@ static PyObject *misfit(PyObject *self, PyObject *args) {
   //PyObject *corr_sum = PyArray_SimpleNew(nd, dims, NPY_DOUBLE);
 
   // output array
-  //int nd = 1;
-  //npy_intp dims[] = {NSOURCES};
-  //PyObject *results = PyArray_SimpleNew(nd, dims, NPY_DOUBLE);
+  int nd = 1;
+  npy_intp dims[] = {NSOURCES};
+  PyObject *results = PyArray_SimpleNew(nd, dims, NPY_DOUBLE);
 
   if (verbose>1) {
     printf("number of components:  %d\n", NCOMPS);

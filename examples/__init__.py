@@ -1,9 +1,7 @@
 
 import numpy as np
-import gridsearch1, gridsearch2
-
 from copy import deepcopy
-from mtuq.util import example_data as examples
+#from mtuq.util import example_data as examples
 
 
 class mtuq_bw(object):
@@ -49,13 +47,13 @@ class mockup(object):
         self.allocate()
 
     def allocate(self):
-        self.data  = np.random.rand((self.nc,self.ns,self.nt))
-        self.greens  = np.random.rand((self.ngf,self.nc,self.ns,self.nt))
-        self.mt  = np.random.rand((self.nmt,self.ngf))
+        self.data  = np.random.rand(self.nc,self.ns,self.nt)
+        self.greens  = np.random.rand(self.ngf,self.nc,self.ns,self.nt)
+        self.mt  = np.random.rand(self.nmt,self.ngf)
 
-        self.data_data = np.random.rand((self.nc))
-        self.greens_data = np.random.rand((self.nc, self.ngf, self.npad))
-        self.greens_greens = np.random.rand((self.nc, self.npad, self.ngf, self.ngf))
+        self.data_data = np.random.rand(self.nc)
+        self.greens_data = np.random.rand(self.nc, self.ngf, self.npad)
+        self.greens_greens = np.random.rand(self.nc, self.npad, self.ngf, self.ngf)
 
     def copy(self):
         return deepcopy(self)
@@ -84,6 +82,8 @@ class mockup_sw(mockup):
         self.ns = 20
         self.nt = 7500
         self.npad = 2001.
+        self.npad1 = (self.npad-1)/2
+        self.npad2 = (self.npad-1)/2
         self.ngf = 6
         self.nmt = nmt
         self.allocate()
@@ -98,8 +98,8 @@ def run_mockup_L1(misfit, mockup):
 
 def run_mockup_L2(misfit, mockup):
     misfit(mockup.data, mockup.greens, mockup.mt,
-    mockup.data_data, mockup.greens_data, mockup.greens_greens
-    mockup.npad1, mockup.npad2)
+        mockup.data_data, mockup.greens_data, mockup.greens_greens,
+        int(mockup.npad1), int(mockup.npad2), 2)
 
 
 

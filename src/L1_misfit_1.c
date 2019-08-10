@@ -4,17 +4,17 @@
 #include <math.h>
 
 // Forward function declaration.
-static PyObject *gridsearch(PyObject *self, PyObject *args); 
+static PyObject *misfit(PyObject *self, PyObject *args); 
 
 // Boilerplate: method list.
 static PyMethodDef methods[] = {
-  { "gridsearch", gridsearch, METH_VARARGS, "Doc string."},
+  { "misfit", misfit, METH_VARARGS, "Doc string."},
   { NULL, NULL, 0, NULL } /* Sentinel */
 };
 
 // Boilerplate: Module initialization.
-PyMODINIT_FUNC initgridsearch1(void) {
-  (void) Py_InitModule("gridsearch1", methods);
+PyMODINIT_FUNC initL1_misfit_1(void) {
+  (void) Py_InitModule("L1_misfit_1", methods);
   import_array();
 }
 
@@ -81,9 +81,9 @@ static inline void get_synthetics(
 }
 
 /*****************************************************************************
- gridsearch
+ misfit
  *****************************************************************************/
-static PyObject *gridsearch(PyObject *self, PyObject *args) {
+static PyObject *misfit(PyObject *self, PyObject *args) {
 
   PyArrayObject *data, *greens, *mt;
   npy_int64 NC, NS, NT, NGF, NMT;
